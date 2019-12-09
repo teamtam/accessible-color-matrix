@@ -18,10 +18,13 @@ type Message =
   | StartEditing
   | FinishEditing
   | CancelEditing
+  | SelectNormalText
+  | SelectLargeText
 
 type alias Model =
   { palette: Palette
   , isEditing: Bool
+  , isLargeText: Bool
   , lastPalette: Palette
   }
 
@@ -70,6 +73,23 @@ view model =
     , Html.map (\m -> PaletteMessage m)
       (paletteUl model.palette model.isEditing)
     , actions model
+    , h2 []
+      [ text ("Text size: " ++
+        if (model.isLargeText)
+          then "large" else "normal")
+      ]
+    , div [ class "usa-grid-full usa-color-row" ]
+      [ button
+        ([ onClick SelectNormalText ] ++
+          if model.isLargeText
+            then [] else [ disabled True, class "usa-button-disabled" ])
+        [ text "Normal Text" ]
+      , button
+        ([ onClick SelectLargeText ] ++
+          if model.isLargeText
+            then [ disabled True, class "usa-button-disabled" ] else [])
+        [ text "Large Text" ]
+      ]
     , h2 [] [ text "Accessible color combinations" ]
     , matrixDiv model.palette
     ]
@@ -107,6 +127,10 @@ update message model =
     CancelEditing ->
       ({model | isEditing = False
               , palette = model.lastPalette}, Cmd.none)
+    SelectNormalText ->
+      ({model | isLargeText = False }, Cmd.none)
+    SelectLargeText ->
+      ({model | isLargeText = True }, Cmd.none)
 
 getPaletteOrDefault : SerializedPalette -> Palette
 getPaletteOrDefault palette =
@@ -121,6 +145,7 @@ init qsPalette =
   in
     ({ palette = palette
      , isEditing = False
+     , isLargeText = False
      , lastPalette = [] },
      updateFaviconFromPalette palette)
 
