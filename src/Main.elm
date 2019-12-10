@@ -82,12 +82,12 @@ view model =
       [ button
         ([ onClick SelectNormalText ] ++
           if model.isLargeText
-            then [] else [ disabled True, class "usa-button-disabled" ])
+            then [ class "usa-button-disabled" ] else [ disabled True ])
         [ text "Normal Text" ]
       , button
         ([ onClick SelectLargeText ] ++
           if model.isLargeText
-            then [ disabled True, class "usa-button-disabled" ] else [])
+            then [ disabled True ] else [ class "usa-button-disabled" ])
         [ text "Large Text" ]
       ]
     , h2 [] [ text "Accessible color combinations" ]
