@@ -1,18 +1,18 @@
 module.exports = {
-  entry: './src/index.js',
+  entry: __dirname + '/src/index.js',
   output: {
-    path: './static',
+    path: __dirname + '/static',
     filename: 'bundle.js'
   },
   resolve: {
-    modulesDirectories: ['node_modules'],
-    extensions: ['', '.js', '.elm']
+    modules: ['node_modules'],
+    extensions: ['.js', '.elm']
   },
   module: {
-    loaders: [{
+    rules: [{
       test: /\.elm$/,
       exclude: [/elm-stuff/, /node_modules/],
-      loader: 'elm-webpack'
+      loader: 'elm-webpack-loader'
     }],
     noParse: /\.elm$/
   },
