@@ -6,7 +6,7 @@ module.exports = {
   },
   resolve: {
     modules: ['node_modules'],
-    extensions: ['.js', '.elm']
+    extensions: ['*', '.js', '.elm']
   },
   module: {
     rules: [{
