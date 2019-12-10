@@ -91,7 +91,7 @@ view model =
         [ text "Large Text" ]
       ]
     , h2 [] [ text "Accessible color combinations" ]
-    , matrixDiv model.palette
+    , matrixDiv model.palette model.isLargeText
     ]
 
 updateFaviconFromPalette : Palette -> Cmd msg

@@ -13,10 +13,11 @@ import Palette exposing (
   Palette, PaletteEntry, paletteEntryHex, squareBgStyle
   )
 
-badContrastLegendText : String
-badContrastLegendText = """
+badContrastLegendText : String -> String
+badContrastLegendText contrastRatio = """
   Please don't use these color combinations; they do not meet a color
-  contrast ratio of 4.5:1, so they do not conform with the standards of
+  contrast ratio of """ ++ contrastRatio ++
+  """:1, so they do not conform with the standards of
   Section 508 for body text. This means that some people would have
   difficulty reading the text. Employing accessibility best practices
   improves the user experience for all users.
@@ -33,12 +34,12 @@ goodContrastText background foreground ratio =
   "The contrast ratio of " ++ foreground.name ++ " on " ++ background.name ++
     " is " ++ (humanFriendlyContrastRatio ratio) ++ "."
 
-legend : Html msg
-legend =
+legend : String -> Html msg
+legend isLargeText =
   div [ class "usa-matrix-legend" ]
     [ badContrastSvg ""
     , p [ class "usa-sr-invisible", ariaHidden True ]
-        [ Html.text badContrastLegendText ]
+        [ Html.text (badContrastLegendText isLargeText) ]
     ]
 
 capFirst : String -> String
@@ -78,8 +79,8 @@ matrixTableHeader palette =
         ([ td [ scope "col" ] [] ] ++ List.map headerCell palette)
       ]
 
-matrixTableRow : Palette -> Html msg
-matrixTableRow palette =
+matrixTableRow : Palette -> Float -> Html msg
+matrixTableRow palette requiredRatio =
   let
     rowHeaderCell : PaletteEntry -> Html msg
     rowHeaderCell entry =
@@ -138,7 +139,7 @@ matrixTableRow palette =
               , div [ class "usa-sr-only" ] [ text desc ]
               ]
       in
-        if ratio >= 4.5 then validCell else invalidCell
+        if ratio >= requiredRatio then validCell else invalidCell
 
     row : Palette -> PaletteEntry -> Html msg
     row palette background =
@@ -148,17 +149,17 @@ matrixTableRow palette =
   in
     tbody [] (List.map (row palette) (List.reverse palette))
 
-matrixTable : Palette -> Html msg
-matrixTable palette =
+matrixTable : Palette -> Bool -> Html msg
+matrixTable palette isLargeText =
   table [ class "usa-table-borderless usa-matrix" ]
     [ matrixTableHeader palette
-    , matrixTableRow palette
+    , matrixTableRow palette (if isLargeText then 3 else 4.5)
     ]
 
-matrixDiv : Palette -> Html msg
-matrixDiv palette =
+matrixDiv : Palette -> Bool -> Html msg
+matrixDiv palette isLargeText =
   div []
     [ symbols
-    , legend
-    , matrixTable palette
+    , legend (if isLargeText then "3" else "4.5")
+    , matrixTable palette isLargeText
     ]
