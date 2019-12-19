@@ -70,6 +70,13 @@ view : Model -> Html Message
 view model =
   div []
     [ h1 [] [ text "Accessible color palette builder" ]
+    , p []
+      [ text "This is a tool to help build color palettes that conform with WCAG 2.0 standards."
+        , text " For more information, refer to "
+        , a [ href "https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html" ] [ text "Success Criterion 1.4.3" ]
+        , text "."
+      ]
+    , h2 [] [ text "Color palette" ]
     , Html.map (\m -> PaletteMessage m)
       (paletteUl model.palette model.isEditing)
     , actions model

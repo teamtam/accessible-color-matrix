@@ -13,14 +13,19 @@ import Palette exposing (
   Palette, PaletteEntry, paletteEntryHex, squareBgStyle
   )
 
-badContrastLegendText : String -> String
-badContrastLegendText contrastRatio = """
-  Please don't use these color combinations; they do not meet a color
-  contrast ratio of """ ++ contrastRatio ++
-  """:1, so they do not conform with the standards of
-  Section 508 for body text. This means that some people would have
-  difficulty reading the text. Employing accessibility best practices
-  improves the user experience for all users.
+badContrastLegendText : Bool -> String
+badContrastLegendText isLargeText =
+  if isLargeText then
+    """
+  Please don't use these color combinations.
+  WCAG 2.0 (AA) requires large text to have a contrast ratio of 3 to 1.
+  Large text is at least 24px/18pt for regular font weight or 19px/14pt for bold.
+"""
+  else
+    """
+  Please don't use these color combinations.
+  WCAG 2.0 (AA) requires normal text to have a contrast ratio of 4.5 to 1.
+  Normal text is less than 24px/18pt for regular font weight or 19px/14pt for bold.
 """
 
 badContrastText : PaletteEntry -> PaletteEntry -> Float -> String
@@ -34,7 +39,7 @@ goodContrastText background foreground ratio =
   "The contrast ratio of " ++ foreground.name ++ " on " ++ background.name ++
     " is " ++ (humanFriendlyContrastRatio ratio) ++ "."
 
-legend : String -> Html msg
+legend : Bool -> Html msg
 legend isLargeText =
   div [ class "usa-matrix-legend" ]
     [ badContrastSvg ""
@@ -160,6 +165,6 @@ matrixDiv : Palette -> Bool -> Html msg
 matrixDiv palette isLargeText =
   div []
     [ symbols
-    , legend (if isLargeText then "3" else "4.5")
+    , legend isLargeText
     , matrixTable palette isLargeText
     ]
